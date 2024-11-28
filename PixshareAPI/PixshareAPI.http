@@ -1,0 +1,6 @@
+@PixshareAPI_HostAddress = http://localhost:5124
+
+GET {{PixshareAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
