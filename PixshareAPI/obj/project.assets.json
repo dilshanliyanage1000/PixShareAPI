@@ -3667,23 +3667,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\just_dila\\.nuget\\packages\\": {},
+    "C:\\Users\\dilsh\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\PixshareAPI.csproj",
+      "projectUniqueName": "C:\\Users\\dilsh\\Desktop\\PixshareAPI\\PixshareAPI\\PixshareAPI.csproj",
       "projectName": "PixshareAPI",
-      "projectPath": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\PixshareAPI.csproj",
-      "packagesPath": "C:\\Users\\just_dila\\.nuget\\packages\\",
-      "outputPath": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\obj\\",
+      "projectPath": "C:\\Users\\dilsh\\Desktop\\PixshareAPI\\PixshareAPI\\PixshareAPI.csproj",
+      "packagesPath": "C:\\Users\\dilsh\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\dilsh\\Desktop\\PixshareAPI\\PixshareAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\just_dila\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\dilsh\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

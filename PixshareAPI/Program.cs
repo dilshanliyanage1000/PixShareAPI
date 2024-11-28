@@ -1,6 +1,7 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2;
 using Amazon.S3;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 
 builder.Configuration.AddSystemsManager("/MovieDb",
     new Amazon.Extensions.NETCore.Setup.AWSOptions { Region = Amazon.RegionEndpoint.USEast1 });
@@ -42,9 +43,9 @@ var app = builder.Build();
 
 app.UseCors("ReactPolicy");
 
-app.UseSwagger();
+//app.UseSwagger();
 
-app.UseSwaggerUI();
+//app.UseSwaggerUI();
 
 app.UseAuthorization();
 

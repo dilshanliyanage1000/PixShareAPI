@@ -1,26 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Mac\\Home\\Documents\\PixshareAPI\\",
+  "WorkspaceRootPath": "C:\\Users\\dilsh\\Desktop\\PixshareAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|c:\\mac\\home\\documents\\pixshareapi\\pixshareapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|solutionrelative:pixshareapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|c:\\mac\\home\\documents\\pixshareapi\\pixshareapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|solutionrelative:pixshareapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|c:\\mac\\home\\documents\\pixshareapi\\pixshareapi\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|c:\\users\\dilsh\\desktop\\pixshareapi\\pixshareapi\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|solutionrelative:pixshareapi\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|c:\\mac\\home\\documents\\pixshareapi\\pixshareapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|solutionrelative:pixshareapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|c:\\mac\\home\\documents\\pixshareapi\\pixshareapi\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{AD5012A6-8052-430D-AABD-ACEDF0CA1154}|PixshareAPI\\PixshareAPI.csproj|solutionrelative:pixshareapi\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -57,65 +41,21 @@
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Program.cs",
-              "RelativeDocumentMoniker": "PixshareAPI\\Program.cs",
-              "ToolTip": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Program.cs",
-              "RelativeToolTip": "PixshareAPI\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-28T03:13:30.182Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "PostController.cs",
-              "DocumentMoniker": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Controllers\\PostController.cs",
+              "DocumentMoniker": "C:\\Users\\dilsh\\Desktop\\PixshareAPI\\PixshareAPI\\Controllers\\PostController.cs",
               "RelativeDocumentMoniker": "PixshareAPI\\Controllers\\PostController.cs",
-              "ToolTip": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Controllers\\PostController.cs",
+              "ToolTip": "C:\\Users\\dilsh\\Desktop\\PixshareAPI\\PixshareAPI\\Controllers\\PostController.cs",
               "RelativeToolTip": "PixshareAPI\\Controllers\\PostController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAABdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-28T02:13:50.568Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "User.cs",
-              "DocumentMoniker": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Models\\User.cs",
-              "RelativeDocumentMoniker": "PixshareAPI\\Models\\User.cs",
-              "ToolTip": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Models\\User.cs",
-              "RelativeToolTip": "PixshareAPI\\Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-28T02:08:11.593Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Properties\\launchSettings.json",
-              "RelativeDocumentMoniker": "PixshareAPI\\Properties\\launchSettings.json",
-              "ToolTip": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Properties\\launchSettings.json",
-              "RelativeToolTip": "PixshareAPI\\Properties\\launchSettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-11-28T02:05:05.303Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UserController.cs",
-              "DocumentMoniker": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Controllers\\UserController.cs",
-              "RelativeDocumentMoniker": "PixshareAPI\\Controllers\\UserController.cs",
-              "ToolTip": "C:\\Mac\\Home\\Documents\\PixshareAPI\\PixshareAPI\\Controllers\\UserController.cs",
-              "RelativeToolTip": "PixshareAPI\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAAEAAAAwMjMzM7MiwAMAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-27T20:44:48.786Z"
+              "WhenOpened": "2024-11-28T04:58:19.495Z",
+              "EditorCaption": ""
             }
           ]
         }

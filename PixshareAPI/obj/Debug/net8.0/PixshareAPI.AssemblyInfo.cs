@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PixshareAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+05bec27e37dcb331145e646ea648ac4c8de096d0")]
 [assembly: System.Reflection.AssemblyProductAttribute("PixshareAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PixshareAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
