@@ -1,6 +1,7 @@
 ﻿using System.Net.Mail;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PixshareAPI.Models;
 
@@ -70,5 +71,37 @@ namespace PixshareAPI.Controllers
                 }
             );
         }
+
+        [HttpPatch("update-password/{userId}")]
+        public async Task<IActionResult> UpdatePassword(string userId, [FromBody] PasswordRequest request)
+        {
+            if (string.IsNullOrEmpty(request.newPassword))
+            {
+                return BadRequest("Password is required.");
+            }
+
+            var user = await _dynamoDbContext.LoadAsync<User>(userId);
+
+            if (user == null)
+            {
+                return NotFound($"User with ID {userId} not found.");
+            }
+
+            try
+            {
+                user.UserPassword = request.newPassword;
+
+                await _dynamoDbContext.SaveAsync(user);
+
+                return Ok(new { Message = "Password updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error updating password: {ex.Message}");
+            }
+        }
+
+
+
     }
 }
