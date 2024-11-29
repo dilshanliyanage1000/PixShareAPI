@@ -1,6 +1,8 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2;
 using Amazon.S3;
+using PixshareAPI.Interface;
+using PixshareAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,10 @@ builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddScoped<IDynamoDBContext, DynamoDBContext>();
 
 builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 var app = builder.Build();
 

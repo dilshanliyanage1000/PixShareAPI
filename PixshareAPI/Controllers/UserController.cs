@@ -3,53 +3,55 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using PixshareAPI.Interface;
 using PixshareAPI.Models;
 
 namespace PixshareAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(IDynamoDBContext dbContext) : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IDynamoDBContext _dynamoDbContext = dbContext;
+        private readonly IUserRepository _userRepository;
 
-        // Registration Endpoint
+        public UserController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
-            if (user.FullName == "" || user.EmailAddress == "" || user.Username == "" || user.UserPassword == "")
+            if (string.IsNullOrEmpty(user.FullName) ||
+                string.IsNullOrEmpty(user.EmailAddress) ||
+                string.IsNullOrEmpty(user.Username) ||
+                string.IsNullOrEmpty(user.UserPassword))
             {
                 return BadRequest("Please enter your information!");
             }
 
-            var existingUser = await _dynamoDbContext.LoadAsync<User>(user.Username);
+            var existingUser = await _userRepository.GetUserByUsernameAsync(user.Username);
 
             if (existingUser != null)
             {
                 return BadRequest("Username already exists.");
             }
 
-            await _dynamoDbContext.SaveAsync(user);
+            await _userRepository.SaveUserAsync(user);
 
-            return Ok();
+            return Ok(new { Message = "User registered successfully!" });
         }
 
-        // Login Endpoint
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] User user)
         {
-            if (user.EmailAddress == "" || user.UserPassword == "")
+            if (string.IsNullOrEmpty(user.EmailAddress) ||
+                string.IsNullOrEmpty(user.UserPassword))
             {
                 return BadRequest("Please enter your credentials!");
             }
 
-            var logUser = await _dynamoDbContext
-                .ScanAsync<User>(new List<ScanCondition>
-                {
-                    new ScanCondition("EmailAddress", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, user.EmailAddress)
-                }).GetRemainingAsync();
-
-            var foundUser = logUser.FirstOrDefault();
+            var foundUser = await _userRepository.GetUserByEmailAsync(user.EmailAddress);
 
             if (foundUser == null)
             {
@@ -62,14 +64,13 @@ namespace PixshareAPI.Controllers
             }
 
             return Ok(new
-                {
-                    Message = "Login successful",
-                    UserId = foundUser.UserId,
-                    Username = foundUser.Username,
-                    EmailAddress = foundUser.EmailAddress,
-                    FullName = foundUser.FullName
-                }
-            );
+            {
+                Message = "Login successful",
+                UserId = foundUser.UserId,
+                Username = foundUser.Username,
+                EmailAddress = foundUser.EmailAddress,
+                FullName = foundUser.FullName
+            });
         }
 
         [HttpPatch("update-password/{userId}")]
@@ -80,7 +81,7 @@ namespace PixshareAPI.Controllers
                 return BadRequest("Password is required.");
             }
 
-            var user = await _dynamoDbContext.LoadAsync<User>(userId);
+            var user = await _userRepository.GetUserByIdAsync(userId);
 
             if (user == null)
             {
@@ -90,8 +91,7 @@ namespace PixshareAPI.Controllers
             try
             {
                 user.UserPassword = request.newPassword;
-
-                await _dynamoDbContext.SaveAsync(user);
+                await _userRepository.UpdateUserAsync(user);
 
                 return Ok(new { Message = "Password updated successfully." });
             }
@@ -101,7 +101,20 @@ namespace PixshareAPI.Controllers
             }
         }
 
+        [HttpDelete("delete/{userId}")]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
 
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
 
+            await _userRepository.DeleteUserAsync(userId);
+
+            return NoContent();
+        }
     }
+
 }
