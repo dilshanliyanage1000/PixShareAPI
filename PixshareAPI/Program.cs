@@ -6,14 +6,26 @@ using PixshareAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Add AWS services
+var awsOptions = new Amazon.Extensions.NETCore.Setup.AWSOptions
+{
+    Credentials = new Amazon.Runtime.BasicAWSCredentials("AKIAQR5EPKDC5EPNSWXD", "URm1dFYp2UB9jH9r94ln/xf4ML0/eEB9cNVmap2u"),
+    Region = Amazon.RegionEndpoint.USEast1
+};
 
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddDefaultAWSOptions(awsOptions);
 
-//builder.Services.AddSwaggerGen();
+builder.Services.AddAWSService<IAmazonDynamoDB>();
 
-builder.Configuration.AddSystemsManager("/MovieDb",
-    new Amazon.Extensions.NETCore.Setup.AWSOptions { Region = Amazon.RegionEndpoint.USEast1 });
+builder.Services.AddAWSService<IAmazonS3>();
+
+builder.Services.AddScoped<IDynamoDBContext, DynamoDBContext>();
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -25,32 +37,13 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add AWS services
-builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS"));
-builder.Services.AddAWSService<IAmazonDynamoDB>();
-builder.Services.AddAWSService<IAmazonS3>();
-builder.Services.AddScoped<IDynamoDBContext, DynamoDBContext>();
+builder.Services.AddControllers();
 
-builder.Services.AddDistributedMemoryCache();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
 app.UseCors("ReactPolicy");
-
-//app.UseSwagger();
-
-//app.UseSwaggerUI();
 
 app.UseAuthorization();
 
