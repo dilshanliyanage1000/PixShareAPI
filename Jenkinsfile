@@ -12,7 +12,7 @@ pipeline {
                 // Checkout the code from the specified Git repository and branch
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dilshanliyanage1000/PixshareAPI.git']])
             }
-
+        }
         stage('Build .NET Core Project') {
             steps {
                 // Restores the NuGet packages for the .NET Core project
