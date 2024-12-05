@@ -13,6 +13,18 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dilshanliyanage1000/PixshareAPI.git']])
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool name: 'SonarScanner for MSBuild'
+                    withSonarQubeEnv() {
+                        bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" begin /k:\"PixshareAPI\""
+                        bat "dotnet build"
+                        bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" end"
+                    }
+                }
+            }
+        }
         stage('Build .NET Core Project') {
             steps {
                 // Restores the NuGet packages for the .NET Core project
