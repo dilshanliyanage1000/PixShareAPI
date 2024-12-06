@@ -68,7 +68,14 @@ pipeline {
                 bat "docker pull %DOCKER_REPO_NAME%:dev"
 
                 // Stop and remove existing container if it exists
-                bat "docker ps -q -f name=pixshare_container | findstr /R /C:'.' && docker stop pixshare_container && docker rm pixshare_container || echo 'No existing container to stop and remove'"
+                bat """
+                    if docker ps -q -f name=pixshare_container > nul 2>&1; then
+                        docker stop pixshare_container
+                        docker rm pixshare_container
+                    else
+                        echo 'No existing container to stop and remove'
+                    fi
+                    """
 
                 // Run the Docker container on the local machine.
                 bat "docker run -itd --name pixshare_container -p 3002:8080 %DOCKER_REPO_NAME%:dev"
