@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'my-docker-hub-credentials'
         SONAR_HOST_URL = 'http://localhost:9000/'
+        DOCKER_REPO_NAME = 'dilshanliyanage1000/pixshareapi'
     }
 
     stages {
@@ -41,6 +42,46 @@ pipeline {
             steps {
                 // Create tests here
                 echo 'Mock up Tests here'
+            }
+        }
+        stage('Docker Build and Push') {
+            steps {
+                script {
+                    // Log in to Docker Hub
+                    withCredentials([usernamePassword(credentialsId: 'my-docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
+                    }
+                    // Build the Docker image
+                    bat "docker build -t pixshareapi:latest -f ./PixshareAPI/Dockerfile ."
+
+                    // Tag the Docker image for the repository
+                    bat "docker tag pixshareapi:latest %DOCKER_REPO_NAME%:dev"
+
+                    // Push the Docker image to Docker Hub
+                    bat "docker push %DOCKER_REPO_NAME%:dev"
+                }
+            }
+        }
+        stage('Deploy to DEV Env') {
+            steps {
+                // Pull the image from Docker Hub to the local machine
+                bat "docker pull %DOCKER_REPO_NAME%:dev"
+
+                // Stop and remove existing container if it exists
+                bat "docker ps -q -f name=pixshare_container | findstr /R /C:'.' && docker stop pixshare_container && docker rm pixshare_container || echo 'No existing container to stop and remove'"
+
+                // Run the Docker container on the local machine.
+                bat "docker run -itd --name pixshare_container -p 3002:8080 %DOCKER_REPO_NAME%:dev"
+            }
+        }
+        stage('Deploy to QAT Env') {
+            steps {
+                echo 'Mocked up QAT Env running successfully'
+            }
+        }
+        stage('Deploy to Staging Env') {
+            steps {
+                echo 'Mocked up Staging Env running successfully'
             }
         }
     }
