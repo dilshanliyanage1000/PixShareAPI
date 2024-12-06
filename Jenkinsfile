@@ -44,7 +44,7 @@ pipeline {
                 echo 'Mock up Tests here'
             }
         }
-        stage('Docker Build and Push') {
+        stage('Deliver to Dockerhub') {
             steps {
                 script {
                     // Log in to Docker Hub
@@ -65,20 +65,7 @@ pipeline {
         stage('Deploy to DEV Env') {
             steps {
                 script {
-                    // Pull the image from Docker Hub to the local machine
-                    bat "docker pull %DOCKER_REPO_NAME%:dev"
-
-                    // Check if the container exists and stop/remove it if it does
-                    // Stop and remove the container if it exists, but don't fail if it doesn't
-                    bat """
-                    docker ps -q -f name=pixshare_container > nul 2>&1 && (
-                        docker stop pixshare_container
-                        docker rm pixshare_container
-                    ) || echo 'No existing container to stop and remove'
-                    """
-
-                    // Run the Docker container on the local machine.
-                    bat "docker run -itd --name pixshare_container -p 3002:8080 %DOCKER_REPO_NAME%:dev"
+                    bat "docker ps -q -f name=pixshare_container >nul 2>&1 && (docker stop pixshare_container && docker rm pixshare_container) || echo No existing container to stop and remove"
                 }
             }
         }
