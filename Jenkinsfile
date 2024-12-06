@@ -69,14 +69,12 @@ pipeline {
                     bat "docker pull %DOCKER_REPO_NAME%:dev"
 
                     // Check if the container exists and stop/remove it if it does
+                    // Stop and remove the container if it exists, but don't fail if it doesn't
                     bat """
-                    docker ps -q -f name=pixshare_container > nul 2>&1
-                    if %ERRORLEVEL% equ 0 (
+                    docker ps -q -f name=pixshare_container > nul 2>&1 && (
                         docker stop pixshare_container
                         docker rm pixshare_container
-                    ) else (
-                        echo 'No existing container to stop and remove'
-                    )
+                    ) || echo 'No existing container to stop and remove'
                     """
 
                     // Run the Docker container on the local machine.
