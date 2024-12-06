@@ -65,7 +65,15 @@ pipeline {
         stage('Deploy to DEV Env') {
             steps {
                 script {
-                    bat "docker ps -q -f name=pixshare_container >nul 2>&1 && (docker stop pixshare_container && docker rm pixshare_container) || echo No existing container to stop and remove"
+                    // Pull the image from Docker Hub to the local machine
+                    bat "docker pull %DOCKER_REPO_NAME%:dev"
+
+                    // Stop and remove existing container if it exists
+                    // bat "docker ps -q -f name=pixshare_container >nul 2>&1 && (docker stop pixshare_container && docker rm pixshare_container) || echo No existing container to stop and remove"
+                    
+                    // Run the Docker container on the local machine.
+                    bat 'docker run -itd --name pixshare_container -p 3002:8080 $DOCKER_REPO_NAME:dev'
+
                 }
             }
         }
