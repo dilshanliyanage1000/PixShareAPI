@@ -89,7 +89,7 @@ namespace PixshareAPI.Repository
 
                 if (post == null)
                 {
-                    return null; 
+                    return null;
                 }
 
                 var user = await _dynamoDbContext.LoadAsync<User>(post.UserId);
@@ -255,7 +255,24 @@ namespace PixshareAPI.Repository
                 throw new Exception($"Error updating post with ID {postId}: {ex.Message}", ex);
             }
         }
+
+        public async Task<int> GetCommentsCount(string postId)
+        {
+            try
+            {
+                var post = await _dynamoDbContext.LoadAsync<Post>(postId);
+
+                if (post == null) throw new Exception("Post not found");
+
+                var commentCount = post.Comments?.Count ?? 0;
+
+                return commentCount;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving post: {ex.Message}");
+                return 0;
+            }
+        }
     }
-
-
 }
