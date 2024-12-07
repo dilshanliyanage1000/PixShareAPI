@@ -5,6 +5,7 @@ using Amazon.S3;
 using PixshareAPI.Interface;
 using PixshareAPI.Models;
 using Amazon.S3.Model;
+using System.Collections.Generic;
 
 namespace PixshareAPI.Repository
 {
@@ -13,11 +14,13 @@ namespace PixshareAPI.Repository
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonS3 _s3Client;
         private const string _s3bucketName = "pixshare-api";
+        private readonly ILikeRepository _likeRepository;
 
-        public PostRepository(IDynamoDBContext dynamoDbContext, IAmazonS3 s3Client)
+        public PostRepository(IDynamoDBContext dynamoDbContext, IAmazonS3 s3Client, ILikeRepository likeRepository)
         {
             _dynamoDbContext = dynamoDbContext;
             _s3Client = s3Client;
+            _likeRepository = likeRepository;
         }
 
         public async Task CreatePostAsync(Post post, IFormFile movieFile)
@@ -63,6 +66,12 @@ namespace PixshareAPI.Repository
             {
                 var user = await _dynamoDbContext.LoadAsync<User>(post.UserId);
 
+                var likesList = await _likeRepository.GetLikes(post.PostId);
+
+                var commentsCount = await GetCommentsCount(post.PostId);
+
+                var likesCount = likesList.Count();
+
                 enrichedPosts.Add(new
                 {
                     post.PostId,
@@ -72,6 +81,9 @@ namespace PixshareAPI.Repository
                     post.PostedDate,
                     post.S3Url,
                     post.Comments,
+                    likesList,
+                    likesCount,
+                    commentsCount,
                     FullName = user?.FullName ?? "Unknown User",
                     Username = user?.Username ?? "Unknown User"
                 });
@@ -94,6 +106,12 @@ namespace PixshareAPI.Repository
 
                 var user = await _dynamoDbContext.LoadAsync<User>(post.UserId);
 
+                var likesList = await _likeRepository.GetLikes(post.PostId);
+
+                var commentsCount = await GetCommentsCount(post.PostId);
+
+                var likesCount = likesList.Count();
+
                 return new
                 {
                     post.PostId,
@@ -103,6 +121,9 @@ namespace PixshareAPI.Repository
                     post.PostedDate,
                     post.S3Url,
                     post.Comments,
+                    likesList,
+                    likesCount,
+                    commentsCount,
                     FullName = user?.FullName ?? "Unknown User",
                     Username = user?.Username ?? "Unknown User"
                 };
@@ -131,6 +152,12 @@ namespace PixshareAPI.Repository
                 {
                     var user = await _dynamoDbContext.LoadAsync<User>(post.UserId);
 
+                    var likesList = await _likeRepository.GetLikes(post.PostId);
+
+                    var commentsCount = await GetCommentsCount(post.PostId);
+
+                    var likesCount = likesList.Count();
+
                     enrichedPosts.Add(new
                     {
                         post.PostId,
@@ -140,6 +167,9 @@ namespace PixshareAPI.Repository
                         post.PostedDate,
                         post.S3Url,
                         post.Comments,
+                        likesList,
+                        likesCount,
+                        commentsCount,
                         FullName = user?.FullName ?? "Unknown User",
                         Username = user?.Username ?? "Unknown User"
                     });
