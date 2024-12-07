@@ -27,6 +27,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 
+builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy", builder =>
