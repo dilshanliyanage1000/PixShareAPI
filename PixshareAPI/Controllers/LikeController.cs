@@ -51,5 +51,22 @@ namespace PixshareAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetLikes(string postId)
+        {
+            try
+            {
+                var likes = await _likeRepository.GetLikes(postId);
+
+                if (likes.Any()) return Ok(likes);
+
+                return Ok(new List<Like>());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
