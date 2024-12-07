@@ -50,5 +50,23 @@ namespace PixshareAPI.Repository
 
             await _dynamoDbContext.SaveAsync(post);
         }
+
+        public async Task<List<Like>> GetLikes(string postId)
+        {
+            try
+            {
+                var post = await _dynamoDbContext.LoadAsync<Post>(postId);
+
+                if (post == null) throw new Exception("Post not found");
+
+                return post.Likes ?? [];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving post: {ex.Message}");
+
+                return [];
+            }
+        }
     }
 }

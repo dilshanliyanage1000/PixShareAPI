@@ -8,5 +8,6 @@ namespace PixshareAPI.Interface
 
         Task RemoveLike(string postId, string userId);
 
+        Task<List<Like>> GetLikes(string postId);
     }
 }
