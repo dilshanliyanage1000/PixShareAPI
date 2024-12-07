@@ -13,7 +13,7 @@ namespace PixshareAPI.Interface
         Task AddCommentAsync(string postId, CommentRequest request);
 
         Task EditCommentAsync(string postId, string commentId, EditCommentRequest request);
-            
+
         Task DeleteCommentAsync(string postId, string commentId);
 
         Task<IEnumerable<object>> GetPostsByUserIdAsync(string userId);
@@ -21,6 +21,8 @@ namespace PixshareAPI.Interface
         Task EditPostAsync(string postId, Post updatedPost);
 
         Task DeletePostAsync(string postId, string userId);
+
+        Task<int> GetCommentsCount(string postId);
 
     }
 
