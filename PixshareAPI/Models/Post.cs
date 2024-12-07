@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using System.ComponentModel.Design;
 
 namespace PixshareAPI.Models
 {
@@ -25,7 +26,10 @@ namespace PixshareAPI.Models
         public string? S3Url { get; set; }
 
         [DynamoDBProperty]
-        public List<Comment>? Comments { get; set; } = new List<Comment>();
+        public List<Like>? Likes { get; set; } = [];
+
+        [DynamoDBProperty]
+        public List<Comment>? Comments { get; set; } = [];
 
         public Post()
         {
@@ -45,5 +49,17 @@ namespace PixshareAPI.Models
             CommentId = Guid.NewGuid().ToString();
             PostedAt = DateTime.Now;
         }
+    }
+
+    public class Like
+    {
+        public string? LikeId { get; set; }
+        public string? UserId { get; set; }
+
+        public Like()
+        {
+            LikeId = Guid.NewGuid().ToString();
+        }
+
     }
 }
