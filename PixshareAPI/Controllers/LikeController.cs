@@ -34,5 +34,22 @@ namespace PixshareAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveLike([FromBody] LikeRequest request)
+        {
+            try
+            {
+                await _likeRepository.RemoveLike(request.PostId, request.UserId);
+
+                var updatedPost = await _postRepository.GetPostByIdAsync(request.PostId);
+
+                return Ok(updatedPost);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

@@ -35,5 +35,20 @@ namespace PixshareAPI.Repository
 
             await _dynamoDbContext.SaveAsync(post);
         }
+
+        public async Task RemoveLike(string postId, string userId)
+        {
+            var post = await _dynamoDbContext.LoadAsync<Post>(postId);
+
+            if (post == null) throw new Exception("Post not found");
+
+            var like = post.Likes?.FirstOrDefault(l => l.UserId == userId);
+
+            if (like == null) throw new Exception("Comment not found");
+
+            post.Likes?.Remove(like);
+
+            await _dynamoDbContext.SaveAsync(post);
+        }
     }
 }

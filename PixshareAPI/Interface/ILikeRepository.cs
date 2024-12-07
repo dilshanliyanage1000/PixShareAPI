@@ -6,5 +6,7 @@ namespace PixshareAPI.Interface
     {
         Task AddLike(string postId, string userId);
 
+        Task RemoveLike(string postId, string userId);
+
     }
 }
