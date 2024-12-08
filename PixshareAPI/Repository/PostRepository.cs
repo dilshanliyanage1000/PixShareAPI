@@ -46,8 +46,17 @@ namespace PixshareAPI.Repository
                     };
 
                     var fileTransferUtility = new TransferUtility(_s3Client);
-                    await fileTransferUtility.UploadAsync(uploadRequest);
-                    post.S3Url = $"https://{_s3bucketName}.s3.amazonaws.com/{newPostId}";
+
+                    try
+                    {
+                        await fileTransferUtility.UploadAsync(uploadRequest);
+                        post.S3Url = $"https://{_s3bucketName}.s3.amazonaws.com/{newPostId}";
+                    }
+                    catch (AmazonS3Exception ex)
+                    {
+                        throw new InvalidOperationException($"Error uploading file to S3: {ex.Message}", ex);
+                    }
+
                 }
                 catch (AmazonS3Exception ex)
                 {
@@ -213,73 +222,131 @@ namespace PixshareAPI.Repository
 
         public async Task DeletePostAsync(string postId, string userId)
         {
-            var existingPost = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new KeyNotFoundException(PostNotFoundPlaceholder);
-
-            if (existingPost.UserId != userId)
+            try
             {
-                throw new UnauthorizedAccessException("You can only delete your own posts");
+                var existingPost = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new KeyNotFoundException(PostNotFoundPlaceholder);
+        
+                if (existingPost.UserId != userId)
+                {
+                    throw new UnauthorizedAccessException("You can only delete your own posts");
+                }
+        
+                try
+                {
+                    var deleteRequest = new DeleteObjectRequest
+                    {
+                        BucketName = _s3bucketName,
+                        Key = postId
+                    };
+        
+                    await _s3Client.DeleteObjectAsync(deleteRequest);
+                }
+                catch (AmazonS3Exception ex)
+                {
+                    throw new InvalidOperationException($"Failed to delete the file from S3: {ex.Message}", ex);
+                }
+        
+                await _dynamoDbContext.DeleteAsync<Post>(postId);
             }
-
-            var deleteRequest = new DeleteObjectRequest
+            catch (KeyNotFoundException ex)
             {
-                BucketName = _s3bucketName,
-                Key = postId
-            };
-
-            await _s3Client.DeleteObjectAsync(deleteRequest);
-
-            await _dynamoDbContext.DeleteAsync<Post>(postId);
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Unauthorized: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"S3 Deletion Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+            }
         }
+
 
         public async Task AddCommentAsync(string postId, CommentRequest request)
         {
-            var post = await _dynamoDbContext.LoadAsync<Post>(postId);
-
-            if (post == null) throw new Exception(PostNotFoundPlaceholder);
-
-            var user = await _dynamoDbContext.LoadAsync<User>(request.UserId);
-
-            if (user == null) throw new Exception("User not found");
-
-            var newComment = new Comment
+            try {
+                var post = await _dynamoDbContext.LoadAsync<Post>(postId);
+    
+                if (post == null) throw new KeyNotFoundException(PostNotFoundPlaceholder);
+    
+                var user = await _dynamoDbContext.LoadAsync<User>(request.UserId);
+    
+                if (user == null) throw new KeyNotFoundException($"User with ID '{request.UserId}' not found.");
+    
+                var newComment = new Comment
+                {
+                    UserId = request.UserId,
+                    FullName = user.FullName,
+                    Content = request.Comment
+                };
+    
+                post.Comments?.Add(newComment);
+                await _dynamoDbContext.SaveAsync(post);
+            }
+            catch (KeyNotFoundException ex)
             {
-                UserId = request.UserId,
-                FullName = user.FullName,
-                Content = request.Comment
-            };
-
-            post.Comments?.Add(newComment);
-            await _dynamoDbContext.SaveAsync(post);
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+            }
         }
 
         public async Task EditCommentAsync(string postId, string commentId, EditCommentRequest request)
         {
-            var post = await _dynamoDbContext.LoadAsync<Post>(postId);
-
-            if (post == null) throw new Exception(PostNotFoundPlaceholder);
-
-            var comment = post.Comments?.FirstOrDefault(c => c.CommentId == commentId);
-
-            if (comment == null) throw new Exception("Comment not found");
-
-            comment.Content = request.Content;
-
-            await _dynamoDbContext.SaveAsync(post);
+            try {
+                var post = await _dynamoDbContext.LoadAsync<Post>(postId);
+    
+                if (post == null) throw new KeyNotFoundException(PostNotFoundPlaceholder);
+    
+                var comment = post.Comments?.FirstOrDefault(c => c.CommentId == commentId);
+    
+                if (comment == null) throw new KeyNotFoundException($"Comment with ID '{commentId}' not found.");
+    
+                comment.Content = request.Content;
+    
+                await _dynamoDbContext.SaveAsync(post);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+            }
         }
 
         public async Task DeleteCommentAsync(string postId, string commentId)
         {
-            var post = await _dynamoDbContext.LoadAsync<Post>(postId);
-
-            if (post == null) throw new Exception(PostNotFoundPlaceholder);
-
-            var comment = post.Comments?.FirstOrDefault(c => c.CommentId == commentId);
-
-            if (comment == null) throw new Exception("Comment not found");
-
-            post.Comments?.Remove(comment);
-
-            await _dynamoDbContext.SaveAsync(post);
+            try {
+            
+                var post = await _dynamoDbContext.LoadAsync<Post>(postId);
+    
+                if (post == null) throw new KeyNotFoundException(PostNotFoundPlaceholder);
+    
+                var comment = post.Comments?.FirstOrDefault(c => c.CommentId == commentId);
+    
+                if (comment == null) throw new KeyNotFoundException($"Comment with ID '{commentId}' not found.");
+    
+                post.Comments?.Remove(comment);
+    
+                await _dynamoDbContext.SaveAsync(post);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+            }
         }
 
         public async Task EditPostAsync(string postId, Post updatedPost)
