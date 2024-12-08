@@ -16,6 +16,9 @@ namespace PixshareAPI.Repository
         private const string _s3bucketName = "pixshare-api";
         private readonly ILikeRepository _likeRepository;
 
+        private const string UnknownUserPlaceholder = "Unknown User";
+        private const string PostNotFoundPlaceholder = "Post Not Found!";
+
         public PostRepository(IDynamoDBContext dynamoDbContext, IAmazonS3 s3Client, ILikeRepository likeRepository)
         {
             _dynamoDbContext = dynamoDbContext;
@@ -48,7 +51,7 @@ namespace PixshareAPI.Repository
                 }
                 catch (AmazonS3Exception ex)
                 {
-                    throw new Exception($"Error uploading file to S3: {ex.Message}");
+                    throw new ApplicationException($"Error uploading file to S3: {ex.Message}", ex);
                 }
             }
 
@@ -90,8 +93,8 @@ namespace PixshareAPI.Repository
                     likesList,
                     likesCount,
                     commentsCount,
-                    FullName = user?.FullName ?? "Unknown User",
-                    Username = user?.Username ?? "Unknown User"
+                    FullName = user?.FullName ?? UnknownUserPlaceholder,
+                    Username = user?.Username ?? UnknownUserPlaceholder
                 });
             }
 
@@ -135,8 +138,8 @@ namespace PixshareAPI.Repository
                     likesList,
                     likesCount,
                     commentsCount,
-                    FullName = user?.FullName ?? "Unknown User",
-                    Username = user?.Username ?? "Unknown User"
+                    FullName = user?.FullName ?? UnknownUserPlaceholder,
+                    Username = user?.Username ?? UnknownUserPlaceholder
                 };
             }
             catch (Exception ex)
@@ -193,8 +196,8 @@ namespace PixshareAPI.Repository
                         likesList,
                         likesCount,
                         commentsCount,
-                        FullName = user?.FullName ?? "Unknown User",
-                        Username = user?.Username ?? "Unknown User"
+                        FullName = user?.FullName ?? UnknownUserPlaceholder,
+                        Username = user?.Username ?? UnknownUserPlaceholder
                     });
                 }
 
@@ -210,13 +213,11 @@ namespace PixshareAPI.Repository
 
         public async Task DeletePostAsync(string postId, string userId)
         {
-            var existingPost = await _dynamoDbContext.LoadAsync<Post>(postId);
-
-            if (existingPost == null) throw new Exception("Post not found");
+            var existingPost = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new KeyNotFoundException(PostNotFoundPlaceholder);
 
             if (existingPost.UserId != userId)
             {
-                throw new Exception("You can only delete your own posts");
+                throw new UnauthorizedAccessException("You can only delete your own posts");
             }
 
             var deleteRequest = new DeleteObjectRequest
@@ -234,7 +235,7 @@ namespace PixshareAPI.Repository
         {
             var post = await _dynamoDbContext.LoadAsync<Post>(postId);
 
-            if (post == null) throw new Exception("Post not found");
+            if (post == null) throw new Exception(PostNotFoundPlaceholder);
 
             var user = await _dynamoDbContext.LoadAsync<User>(request.UserId);
 
@@ -255,7 +256,7 @@ namespace PixshareAPI.Repository
         {
             var post = await _dynamoDbContext.LoadAsync<Post>(postId);
 
-            if (post == null) throw new Exception("Post not found");
+            if (post == null) throw new Exception(PostNotFoundPlaceholder);
 
             var comment = post.Comments?.FirstOrDefault(c => c.CommentId == commentId);
 
@@ -270,7 +271,7 @@ namespace PixshareAPI.Repository
         {
             var post = await _dynamoDbContext.LoadAsync<Post>(postId);
 
-            if (post == null) throw new Exception("Post not found");
+            if (post == null) throw new Exception(PostNotFoundPlaceholder);
 
             var comment = post.Comments?.FirstOrDefault(c => c.CommentId == commentId);
 
@@ -308,7 +309,7 @@ namespace PixshareAPI.Repository
         {
             try
             {
-                var post = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new InvalidOperationException("Post not found");
+                var post = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new InvalidOperationException(PostNotFoundPlaceholder);
 
                 var commentCount = post.Comments?.Count ?? 0;
 
