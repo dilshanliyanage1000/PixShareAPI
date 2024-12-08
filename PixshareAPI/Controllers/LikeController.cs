@@ -59,7 +59,10 @@ namespace PixshareAPI.Controllers
             {
                 var likes = await _likeRepository.GetLikes(postId);
 
-                if (likes.Any()) return Ok(likes);
+                if (likes.Count > 0)
+                {
+                    return Ok(likes);
+                }
 
                 return Ok(new List<Like>());
             }
