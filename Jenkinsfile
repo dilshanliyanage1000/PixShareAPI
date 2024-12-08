@@ -20,9 +20,8 @@ pipeline {
                 script {
                     def scannerHome = tool name: 'SonarScanner for MSBuild'
                     withSonarQubeEnv() {
-                        bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" begin /k:\"PixshareAPI\" /d:sonar.cs.opencover.reportsPaths=Tests/TestResults/**/coverage.cobertura.xml"
+                        bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" begin /k:\"PixshareAPI\""
                         bat "dotnet build"
-                        bat 'dotnet test ./Tests/Tests.csproj --collect:"XPlat Code Coverage" --configuration Release --results-directory Tests/TestResults'
                         bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" end"
                     }
                 }
@@ -44,6 +43,7 @@ pipeline {
             steps {
                 // Run unit tests with proper formatting and collect code coverage
                 echo 'Running unit tests with code coverage...'
+                
                 bat 'dotnet test ./Tests/Tests.csproj --collect:"XPlat Code Coverage" --configuration Release --results-directory Tests/TestResults'
 
                 // Publish the coverage report in Jenkins
