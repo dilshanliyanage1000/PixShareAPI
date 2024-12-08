@@ -11,10 +11,11 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from the specified Git repository and branch
-                checkout scmGit
+                echo "Checkout branch..."
+                checkout scmGit(branches: [[name: '*/20-feature-code-coverage']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dilshanliyanage1000/PixshareAPI.git']])
             }
         }
-        stage('SonarQube Analysis') {
+        stage('Code Analysis with SonarQube') {
             steps {
                 script {
                     def scannerHome = tool name: 'SonarScanner for MSBuild'
@@ -40,8 +41,13 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                // Create tests here
-                echo 'Mock up Tests here'
+                // Run unit tests with proper formatting and collect code coverage
+                echo 'Running unit tests with code coverage...'
+                sh 'dotnet test ./Tests/Tests.csproj --collect:"XPlat Code Coverage" --configuration Release --results-directory Tests/TestResults'
+
+                // Publish the coverage report in Jenkins
+                echo 'Publishing code coverage reports...'
+                cobertura coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml'
             }
         }
         stage('Deliver to Dockerhub') {
