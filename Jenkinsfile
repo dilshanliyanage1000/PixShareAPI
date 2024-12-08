@@ -20,7 +20,7 @@ pipeline {
                 script {
                     def scannerHome = tool name: 'SonarScanner for MSBuild'
                     withSonarQubeEnv() {
-                        bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" begin /k:\"PixshareAPI\""
+                        bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" begin /k:\"PixshareAPI\" /d:sonar.cs.opencover.reportsPaths=Tests/TestResults/**/coverage.cobertura.xml"
                         bat "dotnet build"
                         bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" end"
                     }
