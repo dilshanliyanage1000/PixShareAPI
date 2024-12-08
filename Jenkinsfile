@@ -15,26 +15,15 @@ pipeline {
                 checkout scm
             }
         }
-        // stage('Code Analysis with SonarQube') {
-        //     steps {
-        //         script {
-        //             def scannerHome = tool name: 'SonarScanner for MSBuild'
-        //             withSonarQubeEnv() {
-        //                 bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" begin /k:\"PixshareAPI\""
-        //                 bat "dotnet build"
-        //                 bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" end"
-        //             }
-        //         }
-        //     }
-        // }
-        stage('Static Code Analysis with SonarQube') {
+        stage('Code Analysis with SonarQube') {
             steps {
-                // Run SonarQube analysis
-                withSonarQubeEnv() {
-                    bat 'dotnet sonarscanner begin -k:"PixshareAPI" -d:sonar.host.url="http://localhost:9000" -d:sonar.login="sqa_f273c151279ebbc84ea1ab428de2471649dd3353"'
-                    bat 'dotnet build --configuration Release'
-                    bat 'dotnet test --no-build'
-                    bat 'dotnet sonarscanner end -d:sonar.login="sqa_f273c151279ebbc84ea1ab428de2471649dd3353"'
+                script {
+                    def scannerHome = tool name: 'SonarScanner for MSBuild'
+                    withSonarQubeEnv() {
+                        bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" begin /k:\"PixshareAPI\""
+                        bat "dotnet build"
+                        bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" end"
+                    }
                 }
             }
         }
