@@ -12,7 +12,7 @@ pipeline {
             steps {
                 // Checkout the code from the specified Git repository and branch
                 echo "Checkout branch..."
-                checkout scmGit(branches: [[name: '*/20-feature-code-coverage']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dilshanliyanage1000/PixshareAPI.git']])
+                checkout scm
             }
         }
         stage('Code Analysis with SonarQube') {
