@@ -36,6 +36,7 @@ namespace PixshareAPI.Repository
                 try
                 {
                     using var stream = movieFile.OpenReadStream();
+                    
                     var uploadRequest = new TransferUtilityUploadRequest
                     {
                         InputStream = stream,
@@ -47,25 +48,22 @@ namespace PixshareAPI.Repository
 
                     var fileTransferUtility = new TransferUtility(_s3Client);
 
-                    try
-                    {
-                        await fileTransferUtility.UploadAsync(uploadRequest);
-                        post.S3Url = $"https://{_s3bucketName}.s3.amazonaws.com/{newPostId}";
-                    }
-                    catch (AmazonS3Exception ex)
-                    {
-                        throw new InvalidOperationException($"Error uploading file to S3: {ex.Message}", ex);
-                    }
-
+                    await fileTransferUtility.UploadAsync(uploadRequest);
+                    
+                    post.S3Url = $"https://{_s3bucketName}.s3.amazonaws.com/{newPostId}";
+                    post.PostedDate = DateTime.UtcNow;
+                    
+                    await _dynamoDbContext.SaveAsync(post);
                 }
                 catch (AmazonS3Exception ex)
                 {
-                    throw new ApplicationException($"Error uploading file to S3: {ex.Message}", ex);
+                    throw new InvalidOperationException($"Error uploading file to S3: {ex.Message}", ex);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"An unexpected error occurred: {ex.Message}", ex);
                 }
             }
-
-            post.PostedDate = DateTime.UtcNow;
-            await _dynamoDbContext.SaveAsync(post);
         }
 
         public async Task<IEnumerable<object>> GetAllPostsAsync()
@@ -353,7 +351,7 @@ namespace PixshareAPI.Repository
         {
             try
             {
-                var existingPost = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new Exception($"Post with ID {postId} not found");
+                var existingPost = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new KeyNotFoundException($"Post with ID {postId} not found");
 
                 if (existingPost.UserId != updatedPost.UserId)
                 {
@@ -366,9 +364,17 @@ namespace PixshareAPI.Repository
 
                 await _dynamoDbContext.SaveAsync(existingPost);
             }
+            catch (KeyNotFoundException ex)
+            {
+                throw new InvalidOperationException($"Failed to find post with ID '{postId}': {ex.Message}", ex);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw new InvalidOperationException($"Unauthorized operation: {ex.Message}", ex);
+            }
             catch (Exception ex)
             {
-                throw new Exception($"Error updating post with ID {postId}: {ex.Message}", ex);
+                throw new InvalidOperationException($"An unexpected error occurred while editing the post with ID '{postId}': {ex.Message}", ex);
             }
         }
 
