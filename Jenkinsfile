@@ -22,6 +22,7 @@ pipeline {
                     withSonarQubeEnv() {
                         bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" begin /k:\"PixshareAPI\" /d:sonar.cs.opencover.reportsPaths=Tests/TestResults/**/coverage.cobertura.xml"
                         bat "dotnet build"
+                        bat 'dotnet test ./Tests/Tests.csproj --collect:"XPlat Code Coverage" --configuration Release --results-directory Tests/TestResults'
                         bat "dotnet \"${scannerHome}\\SonarScanner.MSBuild.dll\" end"
                     }
                 }
