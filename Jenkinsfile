@@ -72,11 +72,14 @@ pipeline {
             steps {
                 script {
                     echo 'Pulling and deploying the image to DEV environment...'
-                    bat """
-                        docker pull %DOCKER_REPO_NAME%:dev || exit
-                        docker ps -q -f name=pixshare_container && docker stop pixshare_container && docker rm pixshare_container
-                        docker run -itd --name pixshare_container -p 3002:8080 %DOCKER_REPO_NAME%:dev
-                    """
+                    // Pull the image from Docker Hub to the local machine
+                    bat "docker pull %DOCKER_REPO_NAME%:dev"
+
+                    // Stop and remove existing container if it exists
+                    // bat "docker ps -q -f name=pixshare_container >nul 2>&1 && (docker stop pixshare_container && docker rm pixshare_container) || echo No existing container to stop and remove"
+                    
+                    // Run the Docker container on the local machine.
+                    bat 'docker run -itd -p 3002:8080 %DOCKER_REPO_NAME%:dev'
                 }
             }
         }
