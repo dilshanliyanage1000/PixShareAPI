@@ -20,11 +20,11 @@ namespace PixshareAPI.Repository
         {
             var post = await _dynamoDbContext.LoadAsync<Post>(postId);
 
-            if (post == null) throw new Exception("Post not found");
+            if (post == null) throw new KeyNotFoundException($"Post with ID '{postId}' not found.");
 
             var user = await _dynamoDbContext.LoadAsync<User>(userId);
 
-            if (user == null) throw new Exception("User not found");
+            if (user == null) throw new KeyNotFoundException($"User with ID '{userId}' not found.");
 
             var newLike = new Like
             {
@@ -40,11 +40,11 @@ namespace PixshareAPI.Repository
         {
             var post = await _dynamoDbContext.LoadAsync<Post>(postId);
 
-            if (post == null) throw new Exception("Post not found");
+            if (post == null) throw new KeyNotFoundException($"Post with ID '{postId}' not found.");
 
             var like = post.Likes?.FirstOrDefault(l => l.UserId == userId);
 
-            if (like == null) throw new Exception("Comment not found");
+            if (like == null) throw new InvalidOperationException($"Like by User ID '{userId}' not found for Post ID '{postId}'.");
 
             post.Likes?.Remove(like);
 
@@ -57,15 +57,20 @@ namespace PixshareAPI.Repository
             {
                 var post = await _dynamoDbContext.LoadAsync<Post>(postId);
 
-                if (post == null) throw new Exception("Post not found");
+                if (post == null) throw new KeyNotFoundException($"Post with ID '{postId}' not found.");
 
                 return post.Likes ?? [];
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
                 Console.WriteLine($"Error retrieving post: {ex.Message}");
-
-                return [];
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Log unexpected exceptions
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                throw;
             }
         }
     }

@@ -8,7 +8,7 @@ namespace PixshareAPI.Interface
 
         Task<IEnumerable<object>> GetAllPostsAsync();
 
-        Task<object> GetPostByIdAsync(string postId);
+        Task<object?> GetPostByIdAsync(string postId);
 
         Task AddCommentAsync(string postId, CommentRequest request);
 

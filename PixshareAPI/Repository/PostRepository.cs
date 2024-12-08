@@ -64,13 +64,19 @@ namespace PixshareAPI.Repository
 
             foreach (var post in posts)
             {
+                if (string.IsNullOrEmpty(post.PostId))
+                {
+                    Console.WriteLine("Skipped processing a post due to missing PostId.");
+                    continue;
+                }
+
                 var user = await _dynamoDbContext.LoadAsync<User>(post.UserId);
 
-                var likesList = await _likeRepository.GetLikes(post.PostId);
+                var likesList = await _likeRepository.GetLikes(post.PostId) ?? [];
 
                 var commentsCount = await GetCommentsCount(post.PostId);
 
-                var likesCount = likesList.Count();
+                var likesCount = likesList.Count;
 
                 enrichedPosts.Add(new
                 {
@@ -99,18 +105,23 @@ namespace PixshareAPI.Repository
             {
                 var post = await _dynamoDbContext.LoadAsync<Post>(postId);
 
-                if (post == null)
+                if (post == null || post.PostId == null)
                 {
                     return null;
                 }
 
                 var user = await _dynamoDbContext.LoadAsync<User>(post.UserId);
 
-                var likesList = await _likeRepository.GetLikes(post.PostId);
+                if (user == null)
+                {
+                    return new { Error = "User not found" };
+                }
+
+                var likesList = await _likeRepository.GetLikes(post.PostId) ?? [];
 
                 var commentsCount = await GetCommentsCount(post.PostId);
 
-                var likesCount = likesList.Count();
+                var likesCount = likesList.Count;
 
                 return new
                 {
@@ -132,7 +143,7 @@ namespace PixshareAPI.Repository
             {
                 Console.WriteLine($"Error retrieving post: {ex.Message}");
 
-                return null;
+                return new { Error = ex.Message };
             }
         }
 
@@ -150,13 +161,25 @@ namespace PixshareAPI.Repository
 
                 foreach (var post in posts)
                 {
+                    if (string.IsNullOrEmpty(post.PostId))
+                    {
+                        Console.WriteLine("Skipped processing a post due to missing PostId.");
+                        continue;
+                    }
+
                     var user = await _dynamoDbContext.LoadAsync<User>(post.UserId);
 
-                    var likesList = await _likeRepository.GetLikes(post.PostId);
+                    if (user == null)
+                    {
+                        Console.WriteLine($"User with ID {post.UserId} not found.");
+                        return [];
+                    }
+
+                    var likesList = await _likeRepository.GetLikes(post.PostId) ?? [];
 
                     var commentsCount = await GetCommentsCount(post.PostId);
 
-                    var likesCount = likesList.Count();
+                    var likesCount = likesList.Count;
 
                     enrichedPosts.Add(new
                     {
@@ -262,12 +285,7 @@ namespace PixshareAPI.Repository
         {
             try
             {
-                var existingPost = await _dynamoDbContext.LoadAsync<Post>(postId);
-
-                if (existingPost == null)
-                {
-                    throw new Exception($"Post with ID {postId} not found");
-                }
+                var existingPost = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new Exception($"Post with ID {postId} not found");
 
                 if (existingPost.UserId != updatedPost.UserId)
                 {
@@ -290,9 +308,7 @@ namespace PixshareAPI.Repository
         {
             try
             {
-                var post = await _dynamoDbContext.LoadAsync<Post>(postId);
-
-                if (post == null) throw new Exception("Post not found");
+                var post = await _dynamoDbContext.LoadAsync<Post>(postId) ?? throw new InvalidOperationException("Post not found");
 
                 var commentCount = post.Comments?.Count ?? 0;
 
