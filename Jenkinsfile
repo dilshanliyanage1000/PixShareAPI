@@ -43,7 +43,7 @@ pipeline {
             steps {
                 // Run unit tests with proper formatting and collect code coverage
                 echo 'Running unit tests with code coverage...'
-                sh 'dotnet test ./Tests/Tests.csproj --collect:"XPlat Code Coverage" --configuration Release --results-directory Tests/TestResults'
+                bat 'dotnet test ./Tests/Tests.csproj --collect:"XPlat Code Coverage" --configuration Release --results-directory Tests/TestResults'
 
                 // Publish the coverage report in Jenkins
                 echo 'Publishing code coverage reports...'
