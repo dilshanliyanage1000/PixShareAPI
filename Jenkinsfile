@@ -11,10 +11,11 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from the specified Git repository and branch
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dilshanliyanage1000/PixshareAPI.git']])
+                echo "Checkout branch..."
+                checkout scm
             }
         }
-        stage('SonarQube Analysis') {
+        stage('Code Analysis with SonarQube') {
             steps {
                 script {
                     def scannerHome = tool name: 'SonarScanner for MSBuild'
@@ -40,8 +41,13 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                // Create tests here
-                echo 'Mock up Tests here'
+                // Run unit tests with proper formatting and collect code coverage
+                echo 'Running unit tests with code coverage...'
+                bat 'dotnet test ./Tests/Tests.csproj --collect:"XPlat Code Coverage" --configuration Release --results-directory Tests/TestResults'
+
+                // Publish the coverage report in Jenkins
+                echo 'Publishing code coverage reports...'
+                cobertura coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml'
             }
         }
         stage('Deliver to Dockerhub') {
@@ -65,6 +71,7 @@ pipeline {
         stage('Deploy to DEV Env') {
             steps {
                 script {
+                    echo 'Pulling and deploying the image to DEV environment...'
                     // Pull the image from Docker Hub to the local machine
                     bat "docker pull %DOCKER_REPO_NAME%:dev"
 
@@ -73,7 +80,6 @@ pipeline {
                     
                     // Run the Docker container on the local machine.
                     bat 'docker run -itd -p 3002:8080 %DOCKER_REPO_NAME%:dev'
-
                 }
             }
         }
