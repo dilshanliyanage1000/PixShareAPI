@@ -16,7 +16,7 @@ PixShare is a web application inspired by Instagram, built with ASP.NET Core, Re
 ## Tech Stack
 
 - **Backend**: ASP.NET Core Web API
-- **Frontend**: React.js
+- **Frontend**: React.js (Clone from https://github.com/dilshanliyanage1000/pix-share/tree/main)
 - **Database**: Amazon DynamoDB
 - **DevOps**: Jenkins (CI/CD), SonarQube (Code Quality), Docker (Deployment)
 - **Cloud**: AWS (for DynamoDB and cloud deployment)
